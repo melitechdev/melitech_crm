@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice and Receipt from Melitech Solutions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .message {
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .invoice-details {
+            background-color: #f9f9f9;
+            border-left: 4px solid #FF8C00;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .invoice-details h3 {
+            margin-top: 0;
+            color: #FF8C00;
+            font-size: 16px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+        }
+        .detail-value {
+            color: #333;
+        }
+        .amount-total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #FF8C00;
+        }
+        .attachments {
+            background-color: #fff8f0;
+            border: 1px solid #FFD700;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .attachments h3 {
+            margin-top: 0;
+            color: #FF8C00;
+            font-size: 16px;
+        }
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border-radius: 4px;
+            margin: 8px 0;
+            border: 1px solid #e0e0e0;
+        }
+        .attachment-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #FF8C00;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .cta-button:hover {
+            background: linear-gradient(135deg, #FFA500 0%, #FFB733 100%);
+        }
+        .payment-info {
+            background-color: #f0f8ff;
+            border-left: 4px solid #4169E1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .payment-info h3 {
+            margin-top: 0;
+            color: #4169E1;
+            font-size: 16px;
+        }
+        .footer {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        .footer-tagline {
+            color: #FF8C00;
+            font-style: italic;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        .contact-info {
+            margin: 15px 0;
+            color: #cccccc;
+        }
+        .contact-info a {
+            color: #FF8C00;
+            text-decoration: none;
+        }
+        .social-links {
+            margin-top: 15px;
+        }
+        .social-links a {
+            color: #FF8C00;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <img src="https://accounts.melitechsolutions.co.ke/logo.png" alt="Melitech Solutions Logo">
+            <h1>Invoice & Receipt</h1>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">
+                Dear <strong>{{CLIENT_NAME}}</strong>,
+            </div>
+
+            <div class="message">
+                <p>Thank you for your business! We are pleased to confirm that we have received your payment.</p>
+                <p>Please find attached your invoice and official receipt for the services provided. We appreciate your prompt payment and continued trust in Melitech Solutions.</p>
+            </div>
+
+            <!-- Invoice Details -->
+            <div class="invoice-details">
+                <h3>📄 Transaction Summary</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Invoice Number:</span>
+                    <span class="detail-value">{{INVOICE_NUMBER}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Receipt Number:</span>
+                    <span class="detail-value">{{RECEIPT_NUMBER}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Invoice Date:</span>
+                    <span class="detail-value">{{INVOICE_DATE}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Date:</span>
+                    <span class="detail-value">{{PAYMENT_DATE}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Method:</span>
+                    <span class="detail-value">{{PAYMENT_METHOD}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Amount Paid:</span>
+                    <span class="detail-value amount-total">KES {{AMOUNT}}</span>
+                </div>
+            </div>
+
+            <!-- Attachments -->
+            <div class="attachments">
+                <h3>📎 Attached Documents</h3>
+                <div class="attachment-item">
+                    <div class="attachment-icon">📄</div>
+                    <div>
+                        <strong>{{INVOICE_NUMBER}}.pdf</strong><br>
+                        <small style="color: #666;">Invoice Document</small>
+                    </div>
+                </div>
+                <div class="attachment-item">
+                    <div class="attachment-icon">🧾</div>
+                    <div>
+                        <strong>{{RECEIPT_NUMBER}}.pdf</strong><br>
+                        <small style="color: #666;">Official Receipt</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <p>If you have any questions about this invoice or receipt, please don't hesitate to contact us. We're here to help!</p>
+            </div>
+
+            <center>
+                <a href="https://accounts.melitechsolutions.co.ke/client-portal" class="cta-button">
+                    View in Client Portal
+                </a>
+            </center>
+
+            <!-- Payment Info (for future invoices) -->
+            <div class="payment-info">
+                <h3>💳 Payment Information (For Future Reference)</h3>
+                <p style="margin: 5px 0;"><strong>Bank:</strong> Equity Bank Kenya</p>
+                <p style="margin: 5px 0;"><strong>Account Name:</strong> Melitech Solutions</p>
+                <p style="margin: 5px 0;"><strong>Account Number:</strong> 1234567890</p>
+                <p style="margin: 5px 0;"><strong>M-Pesa Paybill:</strong> 123456</p>
+                <p style="margin: 5px 0;"><strong>Account Number:</strong> MELITECH</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-tagline">
+                — Redefining Technology!!! —
+            </div>
+            <div class="contact-info">
+                <strong>Melitech Solutions</strong><br>
+                Email: <a href="mailto:info@melitechsolutions.co.ke">info@melitechsolutions.co.ke</a><br>
+                Phone: +254 700 000 000<br>
+                Website: <a href="https://www.melitechsolutions.co.ke">www.melitechsolutions.co.ke</a>
+            </div>
+            <div class="social-links">
+                <a href="#">Facebook</a> |
+                <a href="#">Twitter</a> |
+                <a href="#">LinkedIn</a> |
+                <a href="#">Instagram</a>
+            </div>
+            <p style="margin-top: 15px; font-size: 12px; color: #999;">
+                © 2024 Melitech Solutions. All rights reserved.<br>
+                This email and any attachments are confidential and intended solely for the recipient.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+
