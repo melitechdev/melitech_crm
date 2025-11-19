@@ -1,0 +1,234 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Lock, Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { APP_LOGO, APP_TITLE } from "@/const";
+import { useLocation, useSearch } from "wouter";
+import { toast } from "sonner";
+
+export default function ResetPassword() {
+  const [, setLocation] = useLocation();
+  const searchParams = new URLSearchParams(useSearch());
+  const token = searchParams.get("token");
+  
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const getPasswordStrength = (pwd: string) => {
+    if (pwd.length === 0) return { strength: 0, label: "", color: "" };
+    if (pwd.length < 6) return { strength: 25, label: "Weak", color: "bg-red-500" };
+    if (pwd.length < 8) return { strength: 50, label: "Fair", color: "bg-orange-500" };
+    if (pwd.length < 12) return { strength: 75, label: "Good", color: "bg-yellow-500" };
+    return { strength: 100, label: "Strong", color: "bg-green-500" };
+  };
+
+  const passwordStrength = getPasswordStrength(password);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!token) {
+      toast.error("Invalid or missing reset token");
+      return;
+    }
+
+    if (!password || !confirmPassword) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Simulate API call to reset password
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // In a real implementation, this would call your backend API:
+      // await trpc.auth.resetPassword.mutate({ token, password });
+      
+      setIsSuccess(true);
+      toast.success("Password reset successful!");
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        setLocation("/login");
+      }, 2000);
+    } catch (error) {
+      toast.error("Failed to reset password. The link may have expired.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!token) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl text-destructive">Invalid Reset Link</CardTitle>
+            <CardDescription className="text-base mt-2">
+              This password reset link is invalid or has expired.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={() => setLocation("/forgot-password")}
+              className="w-full"
+            >
+              Request New Reset Link
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (isSuccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <div className="h-16 w-16 rounded-full bg-green-500/10 flex items-center justify-center">
+                <CheckCircle2 className="h-8 w-8 text-green-500" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl">Password Reset Complete!</CardTitle>
+            <CardDescription className="text-base mt-2">
+              Your password has been successfully reset.
+              <br />
+              Redirecting to login...
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          {APP_LOGO && (
+            <div className="flex justify-center mb-4">
+              <img src={APP_LOGO} alt={APP_TITLE} className="h-16 w-auto" />
+            </div>
+          )}
+          <CardTitle className="text-2xl">Create New Password</CardTitle>
+          <CardDescription className="text-base mt-2">
+            Enter your new password below
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">New Password *</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create a strong password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-10 pr-10"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              {password && (
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground">Password strength:</span>
+                    <span className={`font-semibold ${
+                      passwordStrength.strength >= 75 ? "text-green-500" :
+                      passwordStrength.strength >= 50 ? "text-yellow-500" :
+                      "text-red-500"
+                    }`}>
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className={`h-full transition-all ${passwordStrength.color}`}
+                      style={{ width: `${passwordStrength.strength}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Must be at least 8 characters long
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm New Password *</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 pr-10"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+              {confirmPassword && password !== confirmPassword && (
+                <p className="text-xs text-destructive">Passwords do not match</p>
+              )}
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading || !password || !confirmPassword || password !== confirmPassword}
+            >
+              {isLoading ? "Resetting Password..." : "Reset Password"}
+            </Button>
+          </form>
+
+          <div className="mt-6 p-4 bg-muted rounded-lg text-sm text-muted-foreground">
+            <p className="font-semibold mb-2">Password Requirements:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>At least 8 characters long</li>
+              <li>Mix of uppercase and lowercase letters (recommended)</li>
+              <li>Include numbers and special characters (recommended)</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
